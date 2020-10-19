@@ -1,14 +1,12 @@
 import React from "react";
 
 import AppSearchAPIConnector from "@elastic/search-ui-app-search-connector";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button, Image, CardMedia } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import {
   ErrorBoundary,
   Facet,
   SearchProvider,
   SearchBox,
-  Results,
   PagingInfo,
   ResultsPerPage,
   Paging,
@@ -26,14 +24,6 @@ import {
   getConfig,
   getFacetFields,
 } from "./config/config-helper";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
-}));
 
 const { hostIdentifier, searchKey, endpointBase, engineName } = getConfig();
 const connector = new AppSearchAPIConnector({
@@ -53,18 +43,15 @@ const config = {
 };
 
 export default function App() {
-  const classes = useStyles();
   return (
     <SearchProvider config={config}>
       <WithSearch
-        mapContextToProps={({
+        mapContextToProps={({ wasSearched, results }) => ({
           wasSearched,
-          searchTerm,
-          setSearchTerm,
           results,
-        }) => ({ wasSearched, searchTerm, setSearchTerm, results })}
+        })}
       >
-        {({ wasSearched, searchTerm, setSearchTerm, results }) => {
+        {({ wasSearched, results }) => {
           const objArray = [];
           results.forEach((row) => {
             if (objArray[row.productidentifier.raw]) {
@@ -114,7 +101,7 @@ export default function App() {
                             <div>
                               <img
                                 src={decodeURIComponent(product.image.raw)}
-                                alt="image"
+                                alt={decodeURIComponent(product.name.raw)}
                                 width="200px"
                                 height="200px"
                               />
@@ -144,6 +131,7 @@ export default function App() {
                                     </Button>
                                   );
                                 }
+                                return null;
                               })}
                             </div>
                           </div>
