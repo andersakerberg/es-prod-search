@@ -20,7 +20,6 @@
   ],
   "sortFields": ["time_updated"],
   "facets": [
-    "tags",
     "brand",
     "finalprice",
     "productidentifier",
