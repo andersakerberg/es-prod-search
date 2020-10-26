@@ -108,6 +108,9 @@ export default function App() {
                       {Object.keys(objArray).map(function (key) {
                         const productsInGroup = objArray[key];
                         const alreadyLoopedMerchants = [];
+                        array.forEach(element => {
+                          
+                        });
                         const product = productsInGroup.value[0];
                         return (
                           <div>
