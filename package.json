@@ -2,6 +2,7 @@
   "name": "app-search-reference-ui-react",
   "version": "1.2.0",
   "license": "Apache-2.0",
+  "homepage": "https://www.fröfynd.se/search",
   "private": true,
   "dependencies": {
     "@elastic/react-search-ui": "1.4.1",

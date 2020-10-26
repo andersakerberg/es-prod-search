@@ -54,13 +54,27 @@ export default function App() {
         {({ wasSearched, results }) => {
           const objArray = [];
           results.forEach((row) => {
-            if (objArray[row.productidentifier.raw]) {
-              objArray[row.productidentifier.raw].value.push(row);
-            } else {
-              objArray[row.productidentifier.raw] = {
-                key: row.productidentifier.raw,
-                value: [row],
-              };
+            if (!row.ean) {
+              if (row.gtin) {
+                row.ean = row.gtin;
+              }
+              if (row.mpn) {
+                row.ean = row.mpn;
+              }
+            }
+
+            if (!row.ean) {
+              row.ean = row.id;
+            }
+            if (row.ean) {
+              if (objArray[row.ean?.raw]) {
+                objArray[row.ean.raw].value.push(row);
+              } else {
+                objArray[row.ean?.raw] = {
+                  key: row.ean.raw,
+                  value: [row],
+                };
+              }
             }
           });
           console.log(objArray);
@@ -97,11 +111,11 @@ export default function App() {
                         const product = productsInGroup.value[0];
                         return (
                           <div>
-                            <div>{decodeURIComponent(product.name.raw)}</div>
+                            <div>{product.name.raw}</div>
                             <div>
                               <img
-                                src={decodeURIComponent(product.image.raw)}
-                                alt={decodeURIComponent(product.name.raw)}
+                                src={product.image.raw}
+                                alt={product.name.raw}
                                 width="200px"
                                 height="200px"
                               />
@@ -119,7 +133,7 @@ export default function App() {
                                   return (
                                     <Button
                                       key={product.merchant.raw}
-                                      href={decodeURIComponent(product.url.raw)}
+                                      href={product.url.raw}
                                       variant="outlined"
                                       color="primary"
                                     >
