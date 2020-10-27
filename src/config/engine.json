@@ -30,7 +30,7 @@
     "tags"
   ],
   "sortFields": ["time_updated"],
-  "facets": ["brand", "ean", "instock", "merchant", "source_id", "tags"],
+  "facets": ["brand","instock", "merchant"],
   "titleField": "name",
   "urlField": "url"
 }
