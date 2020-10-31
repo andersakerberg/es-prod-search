@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import AppSearchAPIConnector from "@elastic/search-ui-app-search-connector";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,10 +9,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
+import { v4 } from "uuid";
 import Paper from "@material-ui/core/Paper";
 import { Button } from "@material-ui/core";
 import {
@@ -26,9 +23,10 @@ import {
   Sorting,
   WithSearch,
 } from "@elastic/react-search-ui";
+import { SingleLinksFacet } from "@elastic/react-search-ui-views";
 import { Layout } from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
-
+import "./styles.css";
 import {
   buildAutocompleteQueryConfig,
   buildFacetConfigFromConfig,
@@ -37,10 +35,12 @@ import {
   getConfig,
   getFacetFields,
 } from "./config/config-helper";
+import Loader from "./Loader";
 
 const useStyles = makeStyles((theme) => ({
   rootmedia: {
-    maxWidth: 400,
+    maxWidth: 800,
+    width: 400,
     marginBottom: 20,
     marginRight: "auto",
     marginLeft: "auto",
@@ -86,9 +86,121 @@ const config = {
   alwaysSearchOnInitialLoad: true,
 };
 
+function getGroupedProducts(scrambled) {
+  // scrambled.forEach((row) => {
+  //   if (row.sku?.raw && !row.ean?.raw) {
+  //     const muppjevel = scrambled.find(
+  //       (X) => X.sku !== null && X.sku.raw === row.sku?.raw
+  //     );
+  //     if (muppjevel) {
+  //       row.ean.raw = muppjevel.ean.raw;
+  //     }
+  //   }
+  // });
+  let objArray = [];
+  scrambled.forEach((row) => {
+    if (!row.ean?.raw) {
+      if (row.gtin?.raw) {
+        row.ean.raw = row.gtin?.raw;
+      }
+      if (!row.gtin?.raw) {
+      }
+    }
+    let productId = null;
+    if (row.name.raw !== null) {
+      const match = row.name?.raw.match(/\d/g);
+      if (match && match[0].length > 8) {
+        productId = match[0];
+      }
+    }
+    if (!productId) {
+      productId = null;
+    }
+
+    if (productId != null && (productId == "" || productId.length < 1)) {
+      productId = null;
+    }
+    let groupByProductId = null;
+
+    groupByProductId = objArray
+      .filter((X) => X.ean != null)
+      .find((X) => X.ean.raw === row.ean?.raw);
+    if (groupByProductId) {
+      groupByProductId.id = v4();
+      groupByProductId.value.push(row);
+      groupByProductId.productId = productId;
+      groupByProductId.key = row.ean?.raw;
+      groupByProductId.sku = row.sku?.raw !== null ? row.sku?.raw : null;
+      if (row.brand) {
+        groupByProductId.brand = row.brand?.raw;
+      }
+    } else {
+      objArray.push({
+        key: row.ean?.raw,
+        id: v4(),
+        value: [row],
+        productId: productId,
+        brand: row.brand !== null ? row.brand?.raw : null,
+        sku: row.sku?.raw !== null ? row.sku?.raw : null,
+      });
+    }
+  });
+
+  objArray.forEach((firstGrouping) => {
+    const brand = firstGrouping.brand?.raw;
+    const productId = firstGrouping.productId;
+    const ean = firstGrouping.ean?.rwa;
+    const productsGrouped = firstGrouping.value;
+    const id = firstGrouping.id?.raw;
+    const sku = firstGrouping.sku?.raw;
+    let foundmatch = false;
+    if (productId != null) {
+      const foundMatchOnProductIdInOtherGroup = objArray.find(
+        (X) =>
+          X.productId != null &&
+          X.brand != null &&
+          X.brand.raw != null &&
+          X.id.raw != null &&
+          X.productId === firstGrouping.productId &&
+          X.brand === firstGrouping.brand?.raw &&
+          X.id !== firstGrouping.id?.raw
+      );
+      if (foundMatchOnProductIdInOtherGroup) {
+        foundMatchOnProductIdInOtherGroup.value.push(productsGrouped);
+        objArray = objArray.filter(function (item) {
+          return item.id?.raw !== id;
+        });
+        foundmatch = true;
+      }
+    }
+
+    if (sku != null && !foundmatch) {
+      const foundMatchOnProductIdInOtherGroup = objArray.find(
+        (X) =>
+          X.sku != null &&
+          X.id != null &&
+          X.id.raw != null &&
+          X.sku.raw != null &&
+          X.sku.raw === firstGrouping.sku &&
+          X.id.raw !== firstGrouping.id
+      );
+      if (foundMatchOnProductIdInOtherGroup) {
+        foundMatchOnProductIdInOtherGroup.value.push(productsGrouped);
+        objArray = objArray.filter(function (item) {
+          return item.id.raw !== id;
+        });
+      }
+    }
+  });
+
+  return objArray;
+}
+
 export default function Search() {
   const classes = useStyles();
   const [spacing, setSpacing] = React.useState(2);
+  const [groupedProducts, setGroupedProducts] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
   const handleChange = (event) => {
     setSpacing(Number(event.target.value));
   };
@@ -102,71 +214,34 @@ export default function Search() {
         })}
       >
         {({ wasSearched, results, searchTerm }) => {
-          const objArray = [];
-          results.forEach((row) => {
-            if (!row.ean) {
-              if (row.gtin) {
-                row.ean = row.gtin;
-              }
-              if (row.mpn) {
-                row.ean = row.mpn;
-              }
-            }
-
-            let productId = row.name.raw.match(/\d/g).join("");
-            if (productId == "" || productId.length < 1) {
-              productId = null;
-            }
-
-            if (!row.ean && !productId) {
-              row.ean = row.id;
-            }
-
-            let groupByEan = null;
-            let groupByProductId = null;
-
-            if (productId !== null) {
-              groupByProductId = objArray.find(
-                (X) => X.productId === productId
-              );
-              if (groupByProductId) {
-                groupByProductId.value.push(row);
-                groupByProductId.productId = productId;
-                groupByProductId.key = row.ean?.raw;
-              } else {
-                objArray.push({
-                  key: row.ean?.raw,
-                  value: [row],
-                  productId: productId,
-                });
-              }
-            }
-
-            if (productId == 10920) {
-              console.log(objArray);
-            }
-          });
           return (
             <div className="App">
               <ErrorBoundary>
                 <Layout
-                  header={<SearchBox autocompleteSuggestions={true} />}
-                  sideContent={
+                  header={
                     <div>
-                      {wasSearched && (
-                        <Sorting
-                          label={"Sort by"}
-                          sortOptions={buildSortOptionsFromConfig()}
-                        />
-                      )}
+                      <SearchBox autocompleteSuggestions={true} />
                       {getFacetFields().map((field) => {
-                        return (
-                          <Facet
-                            key={field}
-                            field={field}
-                            label={field.substring(0, field.ength - 2)}
-                          />
-                        );
+                        if (
+                          results.some(
+                            (X) =>
+                              X[field] != null &&
+                              X[field].snippet != null &&
+                              X[field].raw.length > 4
+                          )
+                        ) {
+                          if (field.length > 1) {
+                            return (
+                              <Facet
+                                key={field}
+                                field={field}
+                                label={field.substring(0, field.length)}
+                                view={SingleLinksFacet}
+                                filterType="any"
+                              />
+                            );
+                          }
+                        }
                       })}
                     </div>
                   }
@@ -175,40 +250,56 @@ export default function Search() {
                       <Grid item xs={12}>
                         <Paper className={classes.control}>
                           <Grid container>
-                            {Object.keys(objArray).map(function (key) {
-                              const productsInGroup = objArray[key];
+                            {results.map(function (product, index) {
+                              console.log(results);
                               let commaSeparatedDocumentIds = "";
-                              const alreadyLoopedMerchants = [];
+                              if (product.product_ids) {
+                                console.log(product);
+                                commaSeparatedDocumentIds = product.product_ids.raw.join(
+                                  ","
+                                );
+                              } else {
+                                console.log(
+                                  "NO PRODUCT ID ON PRODUCT WITH ID " +
+                                    product.id
+                                );
+                              }
+                              console.log(product.tag_04);
 
-                              let productWithLowestPrice = null;
-                              productsInGroup.value.forEach((product) => {
-                                if (!productWithLowestPrice) {
-                                  productWithLowestPrice = product;
-                                }
+                              product.query = searchTerm;
+                              const href = window.location.href.split("?")[0];
+                              let detailLink = "";
+                              if (href.includes("localhost")) {
+                                detailLink =
+                                  "http://localhost:3001/productdetail?documentIds=" +
+                                  commaSeparatedDocumentIds +
+                                  "&query=" +
+                                  searchTerm +
+                                  "&domain=" +
+                                  "http://localhost:3001";
+                              } else {
+                                detailLink =
+                                  "/productdetail?documentIds=" +
+                                  commaSeparatedDocumentIds +
+                                  "&query=" +
+                                  searchTerm +
+                                  "&domain=" +
+                                  href;
+                              }
 
-                                if (
-                                  productWithLowestPrice.price > product.price
-                                ) {
-                                  productWithLowestPrice = product;
-                                }
-
-                                commaSeparatedDocumentIds +=
-                                  product.id.raw + ",";
-                              });
-                              const productWithDescription = productsInGroup.value.find(
-                                (product) => product.description != null
-                              );
-                              const product = productsInGroup.value[0];
-                              productsInGroup.query = searchTerm;
                               return (
                                 <Card
-                                  key={product.name.raw}
+                                  key={product.name.raw + index}
                                   className={classes.rootmedia}
                                 >
                                   <CardActionArea>
                                     <CardMedia
                                       className={classes.media}
-                                      image={product.image.raw}
+                                      image={
+                                        product.image
+                                          ? product.image.raw
+                                          : "https://via.placeholder.com/150"
+                                      }
                                       title={product.name.raw}
                                     />
                                     <CardContent>
@@ -224,8 +315,8 @@ export default function Search() {
                                         color="textSecondary"
                                         component="p"
                                       >
-                                        {productWithDescription
-                                          ? productWithDescription.description?.raw.substring(
+                                        {product
+                                          ? product.description?.raw.substring(
                                               0,
                                               200
                                             ) + "..."
@@ -238,7 +329,7 @@ export default function Search() {
                                       size="small"
                                       color="primary"
                                       className={classes.buttonbottom}
-                                      href={productWithLowestPrice.url.raw}
+                                      href={product.url.raw}
                                     >
                                       Ta mig till bästa priset!
                                     </Button>
@@ -246,10 +337,7 @@ export default function Search() {
                                       size="small"
                                       color="primary"
                                       className={classes.buttonbottom}
-                                      href={
-                                        "/productdetail?documentIds=" +
-                                        commaSeparatedDocumentIds
-                                      }
+                                      href={detailLink}
                                     >
                                       Läs mer
                                     </Button>

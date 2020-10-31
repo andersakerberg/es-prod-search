@@ -1,0 +1,16 @@
+.sui-layout-sidebar {
+  width: 0px !important;
+}
+
+.sui-layout-main {
+  width: 100% !important;
+  padding: 0 !important;
+}
+ul li {
+  display: inline !important;
+  margin-right: 20px;
+}
+
+.sui-facet__count {
+  display: none;
+}
