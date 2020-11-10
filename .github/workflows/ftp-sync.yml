@@ -10,7 +10,7 @@ jobs:
         with:
           node-version: "12"
       - run: npm i
-      - run: npm run build
+      - run: CI=false npm run build
       - name: Upload ftp
         uses: sebastianpopp/ftp-action@releases/v2
         with:
