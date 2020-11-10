@@ -219,6 +219,50 @@ function getGroupedProducts(scrambled) {
   return objArray;
 }
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+export const structuredDataSingle = (prod, deeplink) => {
+  let data = {
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    name: `${prod.name.raw}`,
+    image: prod.image.raw,
+    description:
+      prod.description && prod.description.raw
+        ? prod.description.raw
+        : product.name.raw,
+    url: deeplink,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: `${"SEK"}`,
+      price: prod["price"] ? `${parseFloat(prod.price.raw)}` : 0,
+      availability: `${getRandomInt(20)}`,
+      seller: {
+        "@type": "Organization",
+        name: prod.brand && prod.brand.raw ? prod.brand.raw : "Leksakstips.se",
+      },
+    },
+  };
+
+  // brand
+  if (prod.ean && prod.ean.raw) {
+    data.mpn = prod.ean.raw;
+    data.brand = {
+      "@type": "Thing",
+      name: prod.brand && prod.brand.raw ? prod.brand.raw : "Leksakstips.se",
+    };
+  }
+
+  // logo
+  if (prod["image"]) {
+    data["image"] = prod["logo"];
+  }
+
+  return JSON.stringify(data);
+};
+
 export default function Search() {
   const classes = useStyles();
   const [spacing, setSpacing] = React.useState(2);
@@ -325,6 +369,7 @@ export default function Search() {
                               xs={12}
                               spacing={2}
                             >
+                              {structuredDataSingle(product, detailLink)}
                               <Card
                                 key={product.name.raw + index}
                                 className={classes.rootmedia}

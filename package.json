@@ -16,6 +16,7 @@
     "react-ribbons": "^1.0.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
+    "react-structured-data": "0.0.14",
     "uuid": "^8.3.1"
   },
   "scripts": {
