@@ -232,7 +232,7 @@ export const structuredDataSingle = (prod, deeplink) => {
     description:
       prod.description && prod.description.raw
         ? prod.description.raw
-        : product.name.raw,
+        : prod.name.raw,
     url: deeplink,
     offers: {
       "@type": "Offer",
@@ -369,7 +369,9 @@ export default function Search() {
                               xs={12}
                               spacing={2}
                             >
-                              {structuredDataSingle(product, detailLink)}
+                              <div style={{ display: "none" }}>
+                                {structuredDataSingle(product, detailLink)}
+                              </div>
                               <Card
                                 key={product.name.raw + index}
                                 className={classes.rootmedia}
