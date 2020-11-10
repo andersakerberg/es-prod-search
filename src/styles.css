@@ -59,6 +59,10 @@ svg * {
   fill: #f3a4af;
 }
 
+.wp-caption {
+  box-shadow: none !important;
+}
+
 .rh-outer-wrap,
 .sui-layout-body:after {
   background-color: #79b6b7 !important;
