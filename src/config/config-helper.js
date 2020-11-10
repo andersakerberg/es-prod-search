@@ -46,7 +46,14 @@ export function getUrlField() {
 }
 
 export function getFacetFields() {
-  return getConfig().facets || [];
+  let returnValue = [];
+
+  getConfig().facets.forEach((element) => {
+    console.log(element);
+    returnValue.push(element);
+  });
+
+  return returnValue;
 }
 
 export function getSortFields() {
@@ -68,7 +75,7 @@ export function stripUnnecessaryResultFields(resultFields) {
         "_meta",
         "id",
         toLowerCase(getTitleField()),
-        toLowerCase(getUrlField())
+        toLowerCase(getUrlField()),
       ].includes(toLowerCase(n))
     ) {
       return acc;
@@ -97,8 +104,8 @@ export function buildSearchOptionsFromConfig() {
         raw: {},
         snippet: {
           size: 100,
-          fallback: true
-        }
+          fallback: true,
+        },
       };
       return acc;
     },
@@ -112,8 +119,8 @@ export function buildSearchOptionsFromConfig() {
       raw: {},
       snippet: {
         size: 100,
-        fallback: true
-      }
+        fallback: true,
+      },
     };
   }
 
@@ -122,8 +129,8 @@ export function buildSearchOptionsFromConfig() {
       raw: {},
       snippet: {
         size: 100,
-        fallback: true
-      }
+        fallback: true,
+      },
     };
   }
 
@@ -140,7 +147,7 @@ export function buildFacetConfigFromConfig() {
     acc = acc || {};
     acc[n] = {
       type: "value",
-      size: 100
+      size: 250,
     };
     return acc;
   }, undefined);
@@ -154,21 +161,21 @@ export function buildSortOptionsFromConfig() {
     {
       name: "Relevance",
       value: "",
-      direction: ""
+      direction: "",
     },
     ...(config.sortFields || []).reduce((acc, sortField) => {
       acc.push({
         name: `${capitalizeFirstLetter(sortField)} ASC`,
         value: sortField,
-        direction: "asc"
+        direction: "asc",
       });
       acc.push({
         name: `${capitalizeFirstLetter(sortField)} DESC`,
         value: sortField,
-        direction: "desc"
+        direction: "desc",
       });
       return acc;
-    }, [])
+    }, []),
   ];
 }
 
@@ -186,9 +193,9 @@ export function buildAutocompleteQueryConfig() {
     suggestions: {
       types: {
         documents: {
-          fields: getConfig().querySuggestFields
-        }
-      }
-    }
+          fields: getConfig().querySuggestFields,
+        },
+      },
+    },
   };
 }

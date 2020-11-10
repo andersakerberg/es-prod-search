@@ -13,6 +13,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-ribbons": "^1.0.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "uuid": "^8.3.1"
@@ -20,7 +21,6 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "react-scripts start",
-    "build-js": "node ./scripts/build-no-chunks.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

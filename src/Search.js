@@ -23,7 +23,10 @@ import {
   Sorting,
   WithSearch,
 } from "@elastic/react-search-ui";
-import { SingleLinksFacet } from "@elastic/react-search-ui-views";
+import {
+  SingleLinksFacet,
+  SingleSelectFacet,
+} from "@elastic/react-search-ui-views";
 import { Layout } from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
 import "./styles.css";
@@ -36,14 +39,33 @@ import {
   getFacetFields,
 } from "./config/config-helper";
 import Loader from "./Loader";
+import {
+  RibbonContainer,
+  RightCornerRibbon,
+  RightCornerLargeRibbon,
+} from "react-ribbons";
 
+function ClearFilters({ filters, clearFilters, className }) {
+  if (filters.length > 0) {
+    return (
+      <div key={className}>
+        <button className={className} onClick={() => clearFilters()}>
+          Rensa {filters.length} filter..
+        </button>
+      </div>
+    );
+  }
+  return null;
+}
 const useStyles = makeStyles((theme) => ({
   rootmedia: {
-    maxWidth: 800,
-    width: 400,
-    marginBottom: 20,
+    width: "auto",
+    padding: 20,
     marginRight: "auto",
     marginLeft: "auto",
+    height: 450,
+    position: "relative",
+    margin: 10,
   },
   media: {
     backgroundRepeat: "no-repeat",
@@ -61,7 +83,8 @@ const useStyles = makeStyles((theme) => ({
   control: {
     padding: theme.spacing(2),
   },
-
+  readMoreButton: { backgroundColor: "#4bbcd3", color: "white" },
+  toStoreButton: { backgroundColor: "#F3A4AF", color: "white" },
   /*#example2 {
   background: url(mountain.jpg),
   background-repeat: no-repeat;
@@ -207,146 +230,174 @@ export default function Search() {
   return (
     <SearchProvider config={config}>
       <WithSearch
-        mapContextToProps={({ wasSearched, results, searchTerm }) => ({
+        mapContextToProps={({
           wasSearched,
           results,
           searchTerm,
+          filters,
+          clearFilters,
+        }) => ({
+          wasSearched,
+          results,
+          searchTerm,
+          filters,
+          clearFilters,
         })}
       >
-        {({ wasSearched, results, searchTerm }) => {
+        {({ wasSearched, results, searchTerm, filters, clearFilters }) => {
           return (
             <div className="App">
               <ErrorBoundary>
                 <Layout
                   header={
                     <div>
-                      <SearchBox autocompleteSuggestions={true} />
+                      <SearchBox
+                        autocompleteSuggestions={true}
+                        searchAsYouType={true}
+                        inputProps={{
+                          placeholder:
+                            "Sök leksak eller kategori och jämför pris",
+                        }}
+                      />
+                      <ClearFilters
+                        className="clearfilters-btn"
+                        filters={filters}
+                        clearFilters={clearFilters}
+                      />
+
                       {getFacetFields().map((field) => {
-                        if (
-                          results.some(
-                            (X) =>
-                              X[field] != null &&
-                              X[field].snippet != null &&
-                              X[field].raw.length > 4
-                          )
-                        ) {
-                          if (field.length > 1) {
-                            return (
-                              <Facet
-                                key={field}
-                                field={field}
-                                label={field.substring(0, field.length)}
-                                view={SingleLinksFacet}
-                                filterType="any"
-                              />
-                            );
-                          }
-                        }
+                        return (
+                          <Facet
+                            show={8}
+                            key={"facet"}
+                            field={field}
+                            label={field.substring(0, field.length)}
+                            view={SingleLinksFacet}
+                          />
+                        );
                       })}
                     </div>
                   }
                   bodyContent={
                     <div>
-                      <Grid item xs={12}>
-                        <Paper className={classes.control}>
-                          <Grid container>
-                            {results.map(function (product, index) {
-                              console.log(results);
-                              let commaSeparatedDocumentIds = "";
-                              if (product.product_ids) {
-                                console.log(product);
-                                commaSeparatedDocumentIds = product.product_ids.raw.join(
-                                  ","
-                                );
-                              } else {
-                                console.log(
-                                  "NO PRODUCT ID ON PRODUCT WITH ID " +
-                                    product.id
-                                );
-                              }
-                              console.log(product.tag_04);
+                      <Grid container>
+                        {results.map(function (product, index) {
+                          console.log(results);
+                          let commaSeparatedDocumentIds = "";
+                          if (product.product_ids) {
+                            console.log(product);
+                            commaSeparatedDocumentIds = product.product_ids.raw.join(
+                              ","
+                            );
+                          } else {
+                            console.log(
+                              "NO PRODUCT ID ON PRODUCT WITH ID " + product.id
+                            );
+                          }
+                          console.log(product.tag_04);
 
-                              product.query = searchTerm;
-                              const href = window.location.href.split("?")[0];
-                              let detailLink = "";
-                              if (href.includes("localhost")) {
-                                detailLink =
-                                  "http://localhost:3001/productdetail?documentIds=" +
-                                  commaSeparatedDocumentIds +
-                                  "&query=" +
-                                  searchTerm +
-                                  "&domain=" +
-                                  "http://localhost:3001";
-                              } else {
-                                detailLink =
-                                  "/productdetail?documentIds=" +
-                                  commaSeparatedDocumentIds +
-                                  "&query=" +
-                                  searchTerm +
-                                  "&domain=" +
-                                  href;
-                              }
+                          product.query = searchTerm;
+                          const href = window.location.href.split("?")[0];
+                          let detailLink = "";
+                          if (href.includes("localhost")) {
+                            detailLink =
+                              "http://localhost:3001/productdetail?documentIds=" +
+                              commaSeparatedDocumentIds +
+                              "&query=" +
+                              searchTerm +
+                              "&domain=" +
+                              "http://localhost:3001";
+                          } else {
+                            detailLink =
+                              "/productpage?documentIds=" +
+                              commaSeparatedDocumentIds +
+                              "&query=" +
+                              searchTerm +
+                              "&domain=" +
+                              href;
+                          }
 
-                              return (
-                                <Card
-                                  key={product.name.raw + index}
-                                  className={classes.rootmedia}
-                                >
-                                  <CardActionArea>
-                                    <CardMedia
-                                      className={classes.media}
-                                      image={
-                                        product.image
-                                          ? product.image.raw
-                                          : "https://via.placeholder.com/150"
-                                      }
-                                      title={product.name.raw}
-                                    />
-                                    <CardContent>
-                                      <Typography
-                                        gutterBottom
-                                        variant="h5"
-                                        component="h2"
-                                      >
-                                        {product.name.raw}
-                                      </Typography>
-                                      <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                        component="p"
-                                      >
-                                        {product
-                                          ? product.description?.raw.substring(
-                                              0,
-                                              200
-                                            ) + "..."
-                                          : ""}
-                                      </Typography>
-                                    </CardContent>
-                                  </CardActionArea>
-                                  <CardActions>
-                                    <Button
-                                      size="small"
-                                      color="primary"
-                                      className={classes.buttonbottom}
-                                      href={product.url.raw}
+                          return (
+                            <Grid
+                              key={"main-grid" + product.id.raw}
+                              item
+                              lg={4}
+                              xs={12}
+                              spacing={2}
+                            >
+                              <Card
+                                key={product.name.raw + index}
+                                className={classes.rootmedia}
+                              >
+                                <a href={detailLink}>
+                                  <RibbonContainer className="custom-class">
+                                    <CardActionArea>
+                                      <CardMedia
+                                        className={classes.media}
+                                        image={
+                                          product.image
+                                            ? product.image.raw
+                                            : "https://via.placeholder.com/150"
+                                        }
+                                        title={product.name.raw}
+                                      />
+
+                                      <CardContent>
+                                        <Typography
+                                          gutterBottom
+                                          variant="h5"
+                                          component="h2"
+                                        >
+                                          {product.name.raw}
+                                        </Typography>
+                                        <Typography
+                                          variant="body2"
+                                          color="textSecondary"
+                                          component="p"
+                                        >
+                                          {product
+                                            ? product.description?.raw.substring(
+                                                0,
+                                                99
+                                              ) + "..."
+                                            : ""}
+                                        </Typography>
+                                      </CardContent>
+                                    </CardActionArea>
+                                    <CardActions>
+                                      <div className="buttonsBottom">
+                                        <Button
+                                          size="small"
+                                          color="primary"
+                                          className={classes.toStoreButton}
+                                          href={product.url.raw}
+                                          target="blank"
+                                        >
+                                          Till butik
+                                        </Button>
+                                        <Button
+                                          size="small"
+                                          color="primary"
+                                          className={classes.readMoreButton}
+                                          href={detailLink}
+                                        >
+                                          Läs mer
+                                        </Button>
+                                      </div>
+                                    </CardActions>
+                                    <RightCornerLargeRibbon
+                                      backgroundColor="#cc0000"
+                                      color="#f0f0f0"
+                                      fontFamily="Arial"
                                     >
-                                      Ta mig till bästa priset!
-                                    </Button>
-                                    <Button
-                                      size="small"
-                                      color="primary"
-                                      className={classes.buttonbottom}
-                                      href={detailLink}
-                                    >
-                                      Läs mer
-                                    </Button>
-                                  </CardActions>
-                                </Card>
-                              );
-                            })}
-                          </Grid>
-                        </Paper>
+                                      {product.price.raw + " SEK"}
+                                    </RightCornerLargeRibbon>
+                                  </RibbonContainer>
+                                </a>
+                              </Card>
+                            </Grid>
+                          );
+                        })}
                       </Grid>
                     </div>
                   }
