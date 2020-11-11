@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import React from "react";
 import AppSearchAPIConnector from "@elastic/search-ui-app-search-connector";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -10,22 +9,26 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { v4 } from "uuid";
-import Paper from "@material-ui/core/Paper";
 import { Button } from "@material-ui/core";
+import "react-perfect-scrollbar/dist/css/styles.css";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import ScrollMenu from "react-horizontal-scrolling-menu";
+
 import {
   ErrorBoundary,
-  Facet,
   SearchProvider,
   SearchBox,
   PagingInfo,
   ResultsPerPage,
   Paging,
-  Sorting,
   WithSearch,
+  Facet,
 } from "@elastic/react-search-ui";
 import {
-  SingleLinksFacet,
   SingleSelectFacet,
+  SingleLinksFacet,
+  BooleanFacet,
+  MultiCheckboxFacet,
 } from "@elastic/react-search-ui-views";
 import { Layout } from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
@@ -34,16 +37,10 @@ import {
   buildAutocompleteQueryConfig,
   buildFacetConfigFromConfig,
   buildSearchOptionsFromConfig,
-  buildSortOptionsFromConfig,
   getConfig,
   getFacetFields,
 } from "./config/config-helper";
-import Loader from "./Loader";
-import {
-  RibbonContainer,
-  RightCornerRibbon,
-  RightCornerLargeRibbon,
-} from "react-ribbons";
+import { RibbonContainer, RightCornerLargeRibbon } from "react-ribbons";
 
 function ClearFilters({ filters, clearFilters, className }) {
   if (filters.length > 0) {
@@ -109,115 +106,27 @@ const config = {
   alwaysSearchOnInitialLoad: true,
 };
 
-function getGroupedProducts(scrambled) {
-  // scrambled.forEach((row) => {
-  //   if (row.sku?.raw && !row.ean?.raw) {
-  //     const muppjevel = scrambled.find(
-  //       (X) => X.sku !== null && X.sku.raw === row.sku?.raw
-  //     );
-  //     if (muppjevel) {
-  //       row.ean.raw = muppjevel.ean.raw;
-  //     }
-  //   }
-  // });
-  let objArray = [];
-  scrambled.forEach((row) => {
-    if (!row.ean?.raw) {
-      if (row.gtin?.raw) {
-        row.ean.raw = row.gtin?.raw;
-      }
-      if (!row.gtin?.raw) {
-      }
-    }
-    let productId = null;
-    if (row.name.raw !== null) {
-      const match = row.name?.raw.match(/\d/g);
-      if (match && match[0].length > 8) {
-        productId = match[0];
-      }
-    }
-    if (!productId) {
-      productId = null;
-    }
+// One item component
+// selected prop will be passed
+const MenuItem = ({ text, selected }) => {
+  return <div className={`menu-item ${selected ? "active" : ""}`}>{text}</div>;
+};
 
-    if (productId != null && (productId == "" || productId.length < 1)) {
-      productId = null;
-    }
-    let groupByProductId = null;
+// All items component
+// Important! add unique key
+export const Menu = (list, selected) =>
+  list.map((el) => {
+    const { name } = el;
 
-    groupByProductId = objArray
-      .filter((X) => X.ean != null)
-      .find((X) => X.ean.raw === row.ean?.raw);
-    if (groupByProductId) {
-      groupByProductId.id = v4();
-      groupByProductId.value.push(row);
-      groupByProductId.productId = productId;
-      groupByProductId.key = row.ean?.raw;
-      groupByProductId.sku = row.sku?.raw !== null ? row.sku?.raw : null;
-      if (row.brand) {
-        groupByProductId.brand = row.brand?.raw;
-      }
-    } else {
-      objArray.push({
-        key: row.ean?.raw,
-        id: v4(),
-        value: [row],
-        productId: productId,
-        brand: row.brand !== null ? row.brand?.raw : null,
-        sku: row.sku?.raw !== null ? row.sku?.raw : null,
-      });
-    }
+    return <MenuItem text={name} key={name} selected={selected} />;
   });
 
-  objArray.forEach((firstGrouping) => {
-    const brand = firstGrouping.brand?.raw;
-    const productId = firstGrouping.productId;
-    const ean = firstGrouping.ean?.rwa;
-    const productsGrouped = firstGrouping.value;
-    const id = firstGrouping.id?.raw;
-    const sku = firstGrouping.sku?.raw;
-    let foundmatch = false;
-    if (productId != null) {
-      const foundMatchOnProductIdInOtherGroup = objArray.find(
-        (X) =>
-          X.productId != null &&
-          X.brand != null &&
-          X.brand.raw != null &&
-          X.id.raw != null &&
-          X.productId === firstGrouping.productId &&
-          X.brand === firstGrouping.brand?.raw &&
-          X.id !== firstGrouping.id?.raw
-      );
-      if (foundMatchOnProductIdInOtherGroup) {
-        foundMatchOnProductIdInOtherGroup.value.push(productsGrouped);
-        objArray = objArray.filter(function (item) {
-          return item.id?.raw !== id;
-        });
-        foundmatch = true;
-      }
-    }
+const Arrow = ({ text, className }) => {
+  return <div className={className}>{text}</div>;
+};
 
-    if (sku != null && !foundmatch) {
-      const foundMatchOnProductIdInOtherGroup = objArray.find(
-        (X) =>
-          X.sku != null &&
-          X.id != null &&
-          X.id.raw != null &&
-          X.sku.raw != null &&
-          X.sku.raw === firstGrouping.sku &&
-          X.id.raw !== firstGrouping.id
-      );
-      if (foundMatchOnProductIdInOtherGroup) {
-        foundMatchOnProductIdInOtherGroup.value.push(productsGrouped);
-        objArray = objArray.filter(function (item) {
-          return item.id.raw !== id;
-        });
-      }
-    }
-  });
-
-  return objArray;
-}
+const ArrowLeft = Arrow({ text: "<", className: "arrow-prev" });
+const ArrowRight = Arrow({ text: ">", className: "arrow-next" });
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -248,7 +157,9 @@ export const structuredDataSingle = (prod, deeplink) => {
 
   // brand
   if (prod.ean && prod.ean.raw) {
+    // @ts-ignore
     data.mpn = prod.ean.raw;
+    // @ts-ignore
     data.brand = {
       "@type": "Thing",
       name: prod.brand && prod.brand.raw ? prod.brand.raw : "Leksakstips.se",
@@ -263,17 +174,75 @@ export const structuredDataSingle = (prod, deeplink) => {
   return JSON.stringify(data);
 };
 
+const onSelect = (item) => {
+  selected = item;
+};
+
+let selected = "tag_01";
+
+const getFacetLinks = (filters) => {
+  if (filters && filters.length > 0) {
+    if (filters.length === 1) {
+      return (
+        <Facet
+          show={20}
+          field="tag_02"
+          label="tag_02"
+          view={SingleLinksFacet}
+        />
+      );
+    }
+
+    if (filters.length === 2) {
+      return (
+        <Facet
+          show={20}
+          field="tag_03"
+          label="tag_03"
+          view={SingleLinksFacet}
+        />
+      );
+    }
+
+    if (filters.length === 3) {
+      return (
+        <Facet
+          show={20}
+          field="tag_04"
+          label="tag_04"
+          view={SingleLinksFacet}
+        />
+      );
+    }
+
+    if (filters.length === 4) {
+      return (
+        <Facet
+          show={20}
+          field="tag_05"
+          label="tag_05"
+          view={SingleLinksFacet}
+        />
+      );
+    }
+  } else {
+    return (
+      <Facet show={20} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+    );
+  }
+
+  return (
+    <Facet show={20} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+  );
+};
+
 export default function Search() {
   const classes = useStyles();
-  const [spacing, setSpacing] = React.useState(2);
-  const [groupedProducts, setGroupedProducts] = React.useState(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const handleChange = (event) => {
-    setSpacing(Number(event.target.value));
-  };
+
   return (
-    <SearchProvider config={config}>
+    <SearchProvider key={v4()} config={config}>
       <WithSearch
+        key={v4()}
         mapContextToProps={({
           wasSearched,
           results,
@@ -288,10 +257,17 @@ export default function Search() {
           clearFilters,
         })}
       >
-        {({ wasSearched, results, searchTerm, filters, clearFilters }) => {
+        {({
+          wasSearched,
+          results,
+          searchTerm,
+          filters,
+          clearFilters,
+          facets,
+        }) => {
           return (
             <div className="App">
-              <ErrorBoundary>
+              <ErrorBoundary key={v4()}>
                 <Layout
                   header={
                     <div>
@@ -309,36 +285,20 @@ export default function Search() {
                         clearFilters={clearFilters}
                       />
 
-                      {getFacetFields().map((field) => {
-                        return (
-                          <Facet
-                            show={8}
-                            key={"facet"}
-                            field={field}
-                            label={field.substring(0, field.length)}
-                            view={SingleLinksFacet}
-                          />
-                        );
-                      })}
+                      {getFacetLinks(filters)}
                     </div>
                   }
                   bodyContent={
                     <div>
-                      <Grid container>
+                      <Grid spacing={1} container>
                         {results.map(function (product, index) {
-                          console.log(results);
                           let commaSeparatedDocumentIds = "";
                           if (product.product_ids) {
-                            console.log(product);
                             commaSeparatedDocumentIds = product.product_ids.raw.join(
                               ","
                             );
                           } else {
-                            console.log(
-                              "NO PRODUCT ID ON PRODUCT WITH ID " + product.id
-                            );
                           }
-                          console.log(product.tag_04);
 
                           product.query = searchTerm;
                           const href = window.location.href.split("?")[0];
@@ -367,7 +327,6 @@ export default function Search() {
                               item
                               lg={4}
                               xs={12}
-                              spacing={2}
                             >
                               <div style={{ display: "none" }}>
                                 {structuredDataSingle(product, detailLink)}
@@ -376,9 +335,12 @@ export default function Search() {
                                 key={product.name.raw + index}
                                 className={classes.rootmedia}
                               >
-                                <a href={detailLink}>
-                                  <RibbonContainer className="custom-class">
-                                    <CardActionArea>
+                                <RibbonContainer className="custom-class">
+                                  <CardActionArea>
+                                    <a
+                                      href={detailLink}
+                                      key={product.id.raw + "link"}
+                                    >
                                       <CardMedia
                                         className={classes.media}
                                         image={
@@ -388,59 +350,58 @@ export default function Search() {
                                         }
                                         title={product.name.raw}
                                       />
-
-                                      <CardContent>
-                                        <Typography
-                                          gutterBottom
-                                          variant="h5"
-                                          component="h2"
-                                        >
-                                          {product.name.raw}
-                                        </Typography>
-                                        <Typography
-                                          variant="body2"
-                                          color="textSecondary"
-                                          component="p"
-                                        >
-                                          {product
-                                            ? product.description?.raw.substring(
-                                                0,
-                                                99
-                                              ) + "..."
-                                            : ""}
-                                        </Typography>
-                                      </CardContent>
-                                    </CardActionArea>
-                                    <CardActions>
-                                      <div className="buttonsBottom">
-                                        <Button
-                                          size="small"
-                                          color="primary"
-                                          className={classes.toStoreButton}
-                                          href={product.url.raw}
-                                          target="blank"
-                                        >
-                                          Till butik
-                                        </Button>
-                                        <Button
-                                          size="small"
-                                          color="primary"
-                                          className={classes.readMoreButton}
-                                          href={detailLink}
-                                        >
-                                          Läs mer
-                                        </Button>
-                                      </div>
-                                    </CardActions>
-                                    <RightCornerLargeRibbon
-                                      backgroundColor="#cc0000"
-                                      color="#f0f0f0"
-                                      fontFamily="Arial"
-                                    >
-                                      {product.price.raw + " SEK"}
-                                    </RightCornerLargeRibbon>
-                                  </RibbonContainer>
-                                </a>
+                                    </a>
+                                    <CardContent>
+                                      <Typography
+                                        gutterBottom
+                                        variant="h5"
+                                        component="h2"
+                                      >
+                                        {product.name.raw}
+                                      </Typography>
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                        component="p"
+                                      >
+                                        {product
+                                          ? product.description?.raw.substring(
+                                              0,
+                                              99
+                                            ) + "..."
+                                          : ""}
+                                      </Typography>
+                                    </CardContent>
+                                  </CardActionArea>
+                                  <CardActions>
+                                    <div className="buttonsBottom">
+                                      <Button
+                                        size="small"
+                                        color="primary"
+                                        className={classes.toStoreButton}
+                                        href={product.url.raw}
+                                        target="blank"
+                                      >
+                                        Till butik
+                                      </Button>
+                                      <Button
+                                        size="small"
+                                        color="primary"
+                                        className={classes.readMoreButton}
+                                        href={detailLink}
+                                      >
+                                        Läs mer
+                                      </Button>
+                                    </div>
+                                  </CardActions>
+                                  <RightCornerLargeRibbon
+                                    backgroundColor="#cc0000"
+                                    color="#f0f0f0"
+                                    fontFamily="Arial"
+                                  >
+                                    {product.price.raw + " SEK"}
+                                  </RightCornerLargeRibbon>
+                                </RibbonContainer>
                               </Card>
                             </Grid>
                           );

@@ -1,4 +1,4 @@
-import React, { makeStyles } from "react";
+import React from "react";
 
 function ShowDetail() {
   const style = {
@@ -9,7 +9,7 @@ function ShowDetail() {
   };
 
   return (
-    <div style={style} className="loader center">
+    <div className="loader center">
       <i className="fa fa-cog fa-spin fa-5x" />
     </div>
   );
