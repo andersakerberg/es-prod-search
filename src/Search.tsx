@@ -11,8 +11,6 @@ import Grid from "@material-ui/core/Grid";
 import { v4 } from "uuid";
 import { Button } from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import ScrollMenu from "react-horizontal-scrolling-menu";
 
 import {
   ErrorBoundary,
@@ -24,12 +22,7 @@ import {
   WithSearch,
   Facet,
 } from "@elastic/react-search-ui";
-import {
-  SingleSelectFacet,
-  SingleLinksFacet,
-  BooleanFacet,
-  MultiCheckboxFacet,
-} from "@elastic/react-search-ui-views";
+import { SingleLinksFacet } from "@elastic/react-search-ui-views";
 import { Layout } from "@elastic/react-search-ui-views";
 import "@elastic/react-search-ui-views/lib/styles/styles.css";
 import "./styles.css";
@@ -38,7 +31,6 @@ import {
   buildFacetConfigFromConfig,
   buildSearchOptionsFromConfig,
   getConfig,
-  getFacetFields,
 } from "./config/config-helper";
 import { RibbonContainer, RightCornerLargeRibbon } from "react-ribbons";
 
@@ -125,9 +117,6 @@ const Arrow = ({ text, className }) => {
   return <div className={className}>{text}</div>;
 };
 
-const ArrowLeft = Arrow({ text: "<", className: "arrow-prev" });
-const ArrowRight = Arrow({ text: ">", className: "arrow-next" });
-
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -174,65 +163,129 @@ export const structuredDataSingle = (prod, deeplink) => {
   return JSON.stringify(data);
 };
 
-const onSelect = (item) => {
-  selected = item;
-};
-
 let selected = "tag_01";
 
 const getFacetLinks = (filters) => {
   if (filters && filters.length > 0) {
     if (filters.length === 1) {
       return (
-        <Facet
-          show={20}
-          field="tag_02"
-          label="tag_02"
-          view={SingleLinksFacet}
-        />
+        <div>
+          <Facet
+            show={10}
+            field="tag_01"
+            label="tag_01"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_02"
+            label="tag_02"
+            view={SingleLinksFacet}
+          />
+        </div>
       );
     }
 
     if (filters.length === 2) {
       return (
-        <Facet
-          show={20}
-          field="tag_03"
-          label="tag_03"
-          view={SingleLinksFacet}
-        />
+        <div>
+          <Facet
+            show={10}
+            field="tag_01"
+            label="tag_01"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_02"
+            label="tag_02"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_03"
+            label="tag_03"
+            view={SingleLinksFacet}
+          />
+        </div>
       );
     }
 
     if (filters.length === 3) {
       return (
-        <Facet
-          show={20}
-          field="tag_04"
-          label="tag_04"
-          view={SingleLinksFacet}
-        />
+        <div>
+          <Facet
+            show={10}
+            field="tag_01"
+            label="tag_01"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_02"
+            label="tag_02"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_03"
+            label="tag_03"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_04"
+            label="tag_04"
+            view={SingleLinksFacet}
+          />
+        </div>
       );
     }
 
     if (filters.length === 4) {
       return (
-        <Facet
-          show={20}
-          field="tag_05"
-          label="tag_05"
-          view={SingleLinksFacet}
-        />
+        <div>
+          <Facet
+            show={10}
+            field="tag_01"
+            label="tag_01"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_02"
+            label="tag_02"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_03"
+            label="tag_03"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_04"
+            label="tag_04"
+            view={SingleLinksFacet}
+          />
+          <Facet
+            show={10}
+            field="tag_05"
+            label="tag_05"
+            view={SingleLinksFacet}
+          />
+        </div>
       );
     }
   } else {
     return (
-      <Facet show={20} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+      <Facet show={10} field="tag_01" label="tag_01" view={SingleLinksFacet} />
     );
   }
 
   return (
-    <Facet show={20} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+    <Facet show={10} field="tag_01" label="tag_01" view={SingleLinksFacet} />
   );
 };
 
@@ -257,14 +310,7 @@ export default function Search() {
           clearFilters,
         })}
       >
-        {({
-          wasSearched,
-          results,
-          searchTerm,
-          filters,
-          clearFilters,
-          facets,
-        }) => {
+        {({ wasSearched, results, searchTerm, filters, clearFilters }) => {
           return (
             <div className="App">
               <ErrorBoundary key={v4()}>
