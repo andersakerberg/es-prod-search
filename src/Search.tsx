@@ -113,7 +113,9 @@ export const structuredDataSingle = (prod, deeplink) => {
       "@type": "Offer",
       priceCurrency: `${"SEK"}`,
       price: prod["price"] ? `${parseFloat(prod.price.raw)}` : 0,
-      availability: "2",
+      url: deeplink,
+      priceValidUntil: "2021-12-01",
+      availability: "https://schema.org/InStock",
       seller: {
         "@type": "Organization",
         name: prod.brand && prod.brand.raw ? prod.brand.raw : "Leksakstips.se",
