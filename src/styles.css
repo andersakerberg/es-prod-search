@@ -22,10 +22,6 @@
   fill: #f3a4af;
 }
 
-.app-container .wp-caption {
-  box-shadow: none !important;
-}
-
 .rh-outer-wrap,
 .app-container .sui-layout-body:after {
   background-color: #79b6b7 !important;
@@ -85,8 +81,8 @@
 .app-container .MuiButton-root * {
   color: white !important;
 }
-html { 
-  background-color: #79b6b7  !important
+html {
+  background-color: #79b6b7 !important;
 }
 .app-container .sui-layout-body {
   background-color: #79b6b7 !important;
@@ -182,11 +178,10 @@ html {
   cursor: pointer;
 }
 
-
 ul {
-  white-space:nowrap !important;
+  white-space: nowrap !important;
 }
 
 li {
-  display:inline !important;
+  display: inline !important;
 }

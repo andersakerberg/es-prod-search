@@ -8,7 +8,6 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { v4 } from "uuid";
 import { Button } from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
 
@@ -98,25 +97,6 @@ const config = {
   alwaysSearchOnInitialLoad: true,
 };
 
-// One item component
-// selected prop will be passed
-const MenuItem = ({ text, selected }) => {
-  return <div className={`menu-item ${selected ? "active" : ""}`}>{text}</div>;
-};
-
-// All items component
-// Important! add unique key
-export const Menu = (list, selected) =>
-  list.map((el) => {
-    const { name } = el;
-
-    return <MenuItem text={name} key={name} selected={selected} />;
-  });
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 export const structuredDataSingle = (prod, deeplink) => {
   let data = {
     "@context": "http://schema.org/",
@@ -132,7 +112,7 @@ export const structuredDataSingle = (prod, deeplink) => {
       "@type": "Offer",
       priceCurrency: `${"SEK"}`,
       price: prod["price"] ? `${parseFloat(prod.price.raw)}` : 0,
-      availability: `${getRandomInt(20)}`,
+      availability: "2",
       seller: {
         "@type": "Organization",
         name: prod.brand && prod.brand.raw ? prod.brand.raw : "Leksakstips.se",
@@ -159,7 +139,6 @@ export const structuredDataSingle = (prod, deeplink) => {
   return JSON.stringify(data);
 };
 
-let selected = "tag_01";
 const facetsToShow = 6;
 
 const getFacetLinks = (filters) => {
@@ -277,12 +256,22 @@ const getFacetLinks = (filters) => {
     }
   } else {
     return (
-      <Facet show={facetsToShow} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+      <Facet
+        show={facetsToShow}
+        field="tag_01"
+        label="tag_01"
+        view={SingleLinksFacet}
+      />
     );
   }
 
   return (
-    <Facet show={facetsToShow} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+    <Facet
+      show={facetsToShow}
+      field="tag_01"
+      label="tag_01"
+      view={SingleLinksFacet}
+    />
   );
 };
 
@@ -290,9 +279,8 @@ export default function Search() {
   const classes = useStyles();
 
   return (
-    <SearchProvider className="search-affe-box" key={v4()} config={config}>
+    <SearchProvider className="search-affe-box" config={config}>
       <WithSearch
-        key={v4()}
         mapContextToProps={({
           wasSearched,
           results,
@@ -310,7 +298,7 @@ export default function Search() {
         {({ wasSearched, results, searchTerm, filters, clearFilters }) => {
           return (
             <div className="App">
-              <ErrorBoundary key={v4()}>
+              <ErrorBoundary>
                 <Layout
                   header={
                     <div>
