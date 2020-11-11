@@ -1,57 +1,57 @@
-.sui-layout-sidebar {
+.app-container .sui-layout-sidebar {
   width: 0px !important;
 }
 
-.sui-facet__title,
-.sui-facet__count {
+.app-container .sui-facet__title,
+.app-container .sui-facet__count {
   display: none;
 }
-.sui-layout-main {
+.app-container .sui-layout-main {
   width: 100% !important;
   padding: 0 !important;
 }
-ul li {
+.app-container ul li {
   float: left;
 }
 
-a:-webkit-any-link {
+.app-container a:-webkit-any-link {
   text-decoration: none !important;
 }
 
-svg * {
+.app-container svg * {
   fill: #f3a4af;
 }
 
-.wp-caption {
+.app-container .wp-caption {
   box-shadow: none !important;
 }
 
 .rh-outer-wrap,
-.sui-layout-body:after {
+.app-container .sui-layout-body:after {
   background-color: #79b6b7 !important;
 }
 
-.sui-layout-body:after {
+.app-container .sui-layout-body:after {
   background: #79b6b7 !important;
 }
 
-.MuiButtonBase-root {
+.app-container .MuiButtonBase-root {
   margin-bottom: 10px !important;
 }
 
-.sui-single-option-facet__item * {
+.app-container .sui-single-option-facet__item * {
   color: white !important;
   font-size: 12px;
 }
-A:empty {
+.app-container A:empty {
   display: none;
 }
 
-A:empty span {
+.app-container A:empty span {
   display: none;
 }
 
-ul {
+.app-container ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
@@ -59,7 +59,7 @@ ul {
   background-color: #4bbcd3;
 }
 
-ul li {
+.app-container ul li {
   display: inline;
   border: 4px solid #4bbcd3;
   background-color: #4bbcd3;
@@ -67,27 +67,28 @@ ul li {
   border-radius: 25px;
 }
 
-ul li a {
+.app-container ul li a {
   text-decoration: none;
   padding: 0.2em 1em;
   color: #fff;
   background-color: #4bbcd3;
 }
 
-ul li a:hover {
+.app-container ul li a:hover {
   color: #fff;
   background-color: #4bbcd3;
 }
-.MuiButton-root:first-of-type {
+.app-container .MuiButton-root:first-of-type {
   margin-right: 50px !important;
 }
 
-.MuiButton-root * {
+.app-container .MuiButton-root * {
   color: white !important;
 }
-
-html,
-.sui-layout-body {
+html { 
+  background-color: #79b6b7  !important
+}
+.app-container .sui-layout-body {
   background-color: #79b6b7 !important;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-weight: 500;
@@ -95,7 +96,7 @@ html,
   color: black !important;
 }
 
-.clearfilters-btn {
+.app-container .clearfilters-btn {
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -103,7 +104,7 @@ html,
   margin-top: 0 !important;
 } */
 
-.sui-search-box__submit {
+.app-container .sui-search-box__submit {
   padding: 6px 16px;
   font-size: 0.875rem;
   min-width: 64px;
@@ -120,7 +121,7 @@ html,
   background: #f3a4af !important;
   color: white !important;
 }
-.MuiButton-sizeSmall span {
+.app-container .MuiButton-sizeSmall span {
   padding: 6px 16px;
   font-size: 0.875rem;
   min-width: 64px;
@@ -137,13 +138,13 @@ html,
   color: black;
 }
 
-.MuiCardContent-root {
+.app-container .MuiCardContent-root {
   height: 120px;
 }
-.MuiTypography-h5 {
+.app-container .MuiTypography-h5 {
   font-size: 1rem !important;
 }
-.MuiCardActions-root {
+.app-container .MuiCardActions-root {
   position: absolute !important;
   bottom: -460px;
   top: 0;
@@ -151,32 +152,41 @@ html,
   right: 0;
 }
 
-.MuiGrid-item {
+.app-container .MuiGrid-item {
   position: relative;
 }
 
-.loader {
+.app-container .loader {
   position: "fixed";
   top: "50%";
   left: "50%";
   transform: "translate(-50%, -50%)";
 }
 
-.menu-item {
+.app-container .menu-item {
   padding: 0 40px;
   margin: 5px 10px;
   user-select: none;
   cursor: pointer;
   border: none;
 }
-.menu-item-wrapper.active {
+.app-container .menu-item-wrapper.active {
   border: 1px blue solid;
 }
-.menu-item.active {
+.app-container .menu-item.active {
   border: 1px green solid;
 }
 
-.scroll-menu-arrow {
+.app-container .scroll-menu-arrow {
   padding: 20px;
   cursor: pointer;
+}
+
+
+ul {
+  white-space:nowrap !important;
+}
+
+li {
+  display:inline !important;
 }

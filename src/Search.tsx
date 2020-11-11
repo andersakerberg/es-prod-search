@@ -113,10 +113,6 @@ export const Menu = (list, selected) =>
     return <MenuItem text={name} key={name} selected={selected} />;
   });
 
-const Arrow = ({ text, className }) => {
-  return <div className={className}>{text}</div>;
-};
-
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
@@ -164,6 +160,7 @@ export const structuredDataSingle = (prod, deeplink) => {
 };
 
 let selected = "tag_01";
+const facetsToShow = 6;
 
 const getFacetLinks = (filters) => {
   if (filters && filters.length > 0) {
@@ -171,13 +168,13 @@ const getFacetLinks = (filters) => {
       return (
         <div>
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_01"
             label="tag_01"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_02"
             label="tag_02"
             view={SingleLinksFacet}
@@ -190,19 +187,19 @@ const getFacetLinks = (filters) => {
       return (
         <div>
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_01"
             label="tag_01"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_02"
             label="tag_02"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_03"
             label="tag_03"
             view={SingleLinksFacet}
@@ -215,25 +212,25 @@ const getFacetLinks = (filters) => {
       return (
         <div>
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_01"
             label="tag_01"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_02"
             label="tag_02"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_03"
             label="tag_03"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_04"
             label="tag_04"
             view={SingleLinksFacet}
@@ -246,31 +243,31 @@ const getFacetLinks = (filters) => {
       return (
         <div>
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_01"
             label="tag_01"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_02"
             label="tag_02"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_03"
             label="tag_03"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_04"
             label="tag_04"
             view={SingleLinksFacet}
           />
           <Facet
-            show={10}
+            show={facetsToShow}
             field="tag_05"
             label="tag_05"
             view={SingleLinksFacet}
@@ -280,12 +277,12 @@ const getFacetLinks = (filters) => {
     }
   } else {
     return (
-      <Facet show={10} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+      <Facet show={facetsToShow} field="tag_01" label="tag_01" view={SingleLinksFacet} />
     );
   }
 
   return (
-    <Facet show={10} field="tag_01" label="tag_01" view={SingleLinksFacet} />
+    <Facet show={facetsToShow} field="tag_01" label="tag_01" view={SingleLinksFacet} />
   );
 };
 
@@ -293,7 +290,7 @@ export default function Search() {
   const classes = useStyles();
 
   return (
-    <SearchProvider key={v4()} config={config}>
+    <SearchProvider className="search-affe-box" key={v4()} config={config}>
       <WithSearch
         key={v4()}
         mapContextToProps={({
