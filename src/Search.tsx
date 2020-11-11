@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { Button } from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
+import { Helmet } from "react-helmet";
 
 import {
   ErrorBoundary,
@@ -132,8 +133,8 @@ export const structuredDataSingle = (prod, deeplink) => {
   }
 
   // logo
-  if (prod["image"]) {
-    data["image"] = prod["logo"];
+  if (prod.image) {
+    data.image = prod.image.raw;
   }
 
   return JSON.stringify(data);
@@ -359,9 +360,15 @@ export default function Search() {
                               lg={4}
                               xs={12}
                             >
-                              <div style={{ display: "none" }}>
-                                {structuredDataSingle(product, detailLink)}
-                              </div>
+                              <Helmet>
+                                <script
+                                  className="structured-data-list"
+                                  type="application/ld+json"
+                                >
+                                  {structuredDataSingle(product, detailLink)}
+                                </script>
+                              </Helmet>
+
                               <Card
                                 key={product.name.raw + index}
                                 className={classes.rootmedia}
@@ -398,7 +405,7 @@ export default function Search() {
                                         {product
                                           ? product.description?.raw.substring(
                                               0,
-                                              99
+                                              200
                                             ) + "..."
                                           : ""}
                                       </Typography>
