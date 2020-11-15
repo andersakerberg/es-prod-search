@@ -5,7 +5,6 @@ import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { Button } from "@material-ui/core";
@@ -32,6 +31,7 @@ import {
   buildSearchOptionsFromConfig,
   getConfig,
 } from "./config/config-helper";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { RibbonContainer, RightCornerLargeRibbon } from "react-ribbons";
 
 function ClearFilters({ filters, clearFilters, className }) {
@@ -381,14 +381,16 @@ export default function Search() {
                                       href={detailLink}
                                       key={product.id.raw + "link"}
                                     >
-                                      <CardMedia
+                                      <LazyLoadImage
+                                        alt={product.name.raw}
                                         className={classes.media}
-                                        image={
+                                        height={200}
+                                        src={
                                           product.image
                                             ? product.image.raw
                                             : "https://via.placeholder.com/150"
                                         }
-                                        title={product.name.raw}
+                                        width={200}
                                       />
                                     </a>
                                     <CardContent>
