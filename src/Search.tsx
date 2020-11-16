@@ -96,6 +96,9 @@ const config = {
   autocompleteQuery: buildAutocompleteQueryConfig(),
   apiConnector: connector,
   alwaysSearchOnInitialLoad: true,
+  initialState: {
+    resultsPerPage: 100,
+  },
 };
 
 export const structuredDataSingle = (prod, deeplink) => {
