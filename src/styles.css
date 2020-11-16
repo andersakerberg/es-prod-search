@@ -79,7 +79,7 @@
   background-color: #4bbcd3;
 }
 .app-container .MuiButton-root:first-of-type {
-  margin-right: 50px !important;
+  margin-right: 2px !important;
 }
 
 .app-container .MuiButton-root * {
@@ -121,8 +121,17 @@ html {
   background: #f3a4af !important;
   color: white !important;
 }
+
+.toStoreButton {
+  background-color: #f3a4af !important;
+}
+
+.productInfoButton {
+  background-color: #4bbcd3 !important;
+}
+
 .app-container .MuiButton-sizeSmall span {
-  padding: 6px 16px;
+  padding: 0;
   font-size: 0.875rem;
   min-width: 64px;
   box-sizing: border-box;
@@ -143,13 +152,6 @@ html {
 }
 .app-container .MuiTypography-h5 {
   font-size: 1rem !important;
-}
-.app-container .MuiCardActions-root {
-  position: absolute !important;
-  bottom: -460px;
-  top: 0;
-  left: 0;
-  right: 0;
 }
 
 .app-container .MuiGrid-item {
@@ -188,4 +190,9 @@ ul {
 
 li {
   display: inline !important;
+}
+
+.MuiCardActionArea-root img {
+  width: 180px !important;
+  height: 160px !important;
 }

@@ -10,7 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import { Button } from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import { Helmet } from "react-helmet";
-
+import shortid from "shortid";
 import {
   ErrorBoundary,
   SearchProvider,
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 20,
     marginRight: "auto",
     marginLeft: "auto",
-    height: 450,
+    height: 300,
     position: "relative",
     margin: 10,
   },
@@ -357,10 +357,11 @@ export default function Search() {
 
                           return (
                             <Grid
-                              key={"main-grid" + product.id.raw}
                               item
-                              lg={4}
                               xs={12}
+                              lg={4}
+                              md={4}
+                              key={"holder" + shortid.generate()}
                             >
                               <Helmet>
                                 <script
@@ -375,7 +376,10 @@ export default function Search() {
                                 key={product.name.raw + index}
                                 className={classes.rootmedia}
                               >
-                                <RibbonContainer className="custom-class">
+                                <RibbonContainer
+                                  key={"main-ribbon-" + product.id.raw}
+                                  className="custom-class"
+                                >
                                   <CardActionArea>
                                     <a
                                       href={detailLink}
@@ -384,13 +388,11 @@ export default function Search() {
                                       <LazyLoadImage
                                         alt={product.name.raw}
                                         className={classes.media}
-                                        height={200}
                                         src={
                                           product.image
                                             ? product.image.raw
                                             : "https://via.placeholder.com/150"
                                         }
-                                        width={200}
                                       />
                                     </a>
                                     <CardContent>
@@ -399,43 +401,35 @@ export default function Search() {
                                         variant="h5"
                                         component="h2"
                                       >
-                                        {product.name.raw}
+                                        <a
+                                          href={detailLink}
+                                          key={product.id.raw + "link"}
+                                        >
+                                          {product.name.raw}
+                                        </a>
                                       </Typography>
-                                      <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                        component="p"
-                                      >
-                                        {product
-                                          ? product.description?.raw.substring(
-                                              0,
-                                              200
-                                            ) + "..."
-                                          : ""}
-                                      </Typography>
-                                    </CardContent>
-                                  </CardActionArea>
-                                  <CardActions>
-                                    <div className="buttonsBottom">
+
                                       <Button
                                         size="small"
                                         color="primary"
-                                        className={classes.toStoreButton}
                                         href={product.url.raw}
                                         target="blank"
+                                        className="toStoreButton"
                                       >
-                                        Till butik
+                                        <span>Till butik</span>
                                       </Button>
                                       <Button
                                         size="small"
                                         color="primary"
-                                        className={classes.readMoreButton}
                                         href={detailLink}
+                                        className="productInfoButton"
                                       >
-                                        Läs mer
+                                        <span>Produktinfo</span>
                                       </Button>
-                                    </div>
-                                  </CardActions>
+                                    </CardContent>
+                                    <CardActions></CardActions>
+                                  </CardActionArea>
+
                                   <RightCornerLargeRibbon
                                     backgroundColor="#cc0000"
                                     color="#f0f0f0"
