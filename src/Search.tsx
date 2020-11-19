@@ -97,7 +97,7 @@ const config = {
   apiConnector: connector,
   alwaysSearchOnInitialLoad: true,
   initialState: {
-    resultsPerPage: 100,
+    resultsPerPage: 8,
   },
 };
 
