@@ -1,4 +1,4 @@
-import config from "../config/engine.json";
+import config from "./engine.json";
 
 /**
  * This file abstracts most logic around the configuration of the Reference UI.
@@ -16,11 +16,15 @@ export function getConfig() {
 
   if (config.engineName) return config;
 
+  // @ts-ignore
   if (
     typeof window !== "undefined" &&
+    // @ts-ignore
     window.appConfig &&
+    // @ts-ignore
     window.appConfig.engineName
   ) {
+    // @ts-ignore
     return window.appConfig;
   }
 
@@ -135,7 +139,9 @@ export function buildSearchOptionsFromConfig() {
   }
 
   const searchOptions = {};
+  // @ts-ignore
   searchOptions.result_fields = resultFields;
+  // @ts-ignore
   searchOptions.search_fields = searchFields;
   return searchOptions;
 }

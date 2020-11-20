@@ -196,3 +196,95 @@ li {
   width: 180px !important;
   height: 160px !important;
 }
+
+.typo-price-merchant {
+  margin-right: 50px;
+}
+
+td {
+  width: 46%;
+}
+.merchant-logo {
+  padding-right: 10px;
+  width: 120px !important;
+  margin-bottom: 20px !important;
+}
+
+.MuiTableCell-sizeSmall {
+  padding: 6px 12px 10px 1px !important;
+}
+
+.makeStyles-media-3 {
+  width: 65px !important;
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.MuiButtonBase-root {
+  width: 50px !important;
+  text-align: center;
+}
+
+.detailImage {
+  width: 220px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table {
+  table-layout: fixed;
+  width: 500px;
+  list-style: none;
+}
+
+.app-container .MuiButton-root:first-of-type {
+  margin-right: 2px !important;
+  margin-left: 9px;
+  font-size: xx-small;
+}
+
+.MuiSvgIcon-root {
+  right: 0;
+  position: absolute;
+}
+
+.MuiTableCell-root {
+  padding: 0 !important;
+}
+
+td img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.makeStyles-media-3 {
+  margin: 0;
+}
+.MuiTableCell-root {
+  border: none !important;
+}
+
+.MuiPaper-root .MuiTableContainer-root .MuiPaper-elevation1 .MuiPaper-rounded {
+  background-color: none !important;
+}
+
+.MuiPaper-root {
+  background-color: none !important;
+}
+
+.row-product-table {
+  background-color: transparent;
+  border: rgb(189, 211, 190) 1px solid !important;
+  border-radius: 5px;
+}
+
+
+.MuiTypography-body1 {
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.00938em;
+  padding: 2px;
+}

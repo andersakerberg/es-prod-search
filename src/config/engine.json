@@ -1,5 +1,5 @@
 {
-  "engineName": "aff-dev-m",
+  "engineName": "aff-dev-m2",
   "endpointBase": "https://0949d47d5b6f44168f0f81e0b797f706.ent-search.westeurope.azure.elastic-cloud.com",
   "searchKey": "search-oa2xvfwpjdfbd5pczn4s2pz2",
   "resultFields": [
@@ -8,9 +8,9 @@
     "image",
     "name",
     "price",
-    "product_ids",
     "url",
     "id",
+    "merchantdata",
     "tag_01",
     "tag_02",
     "tag_03",
