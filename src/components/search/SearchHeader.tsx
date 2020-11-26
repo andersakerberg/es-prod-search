@@ -3,7 +3,7 @@ import { Typography } from "@material-ui/core";
 import { SearchBox, Facet } from "@elastic/react-search-ui";
 import { SingleLinksFacet } from "@elastic/react-search-ui-views";
 
-const facetsToShow = 9;
+const facetsToShow = 13;
 
 const ClearFilters = ({ filters, clearFilters, className }) => {
   if (filters.length > 0) {
@@ -19,136 +19,24 @@ const ClearFilters = ({ filters, clearFilters, className }) => {
 };
 
 const getFacetLinks = (filters) => {
-  if (filters && filters.length > 0) {
-    if (filters.length === 1) {
-      return (
-        <div>
-          <Facet
-            show={facetsToShow}
-            field="tag_01"
-            label="tag_01"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_02"
-            label="tag_02"
-            view={SingleLinksFacet}
-          />
-        </div>
-      );
-    }
-
-    if (filters.length === 2) {
-      return (
-        <div>
-          <Facet
-            show={facetsToShow}
-            field="tag_01"
-            label="tag_01"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_02"
-            label="tag_02"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_03"
-            label="tag_03"
-            view={SingleLinksFacet}
-          />
-        </div>
-      );
-    }
-
-    if (filters.length === 3) {
-      return (
-        <div>
-          <Facet
-            show={facetsToShow}
-            field="tag_01"
-            label="tag_01"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_02"
-            label="tag_02"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_03"
-            label="tag_03"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_04"
-            label="tag_04"
-            view={SingleLinksFacet}
-          />
-        </div>
-      );
-    }
-
-    if (filters.length === 4) {
-      return (
-        <div>
-          <Facet
-            show={facetsToShow}
-            field="tag_01"
-            label="tag_01"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_02"
-            label="tag_02"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_03"
-            label="tag_03"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_04"
-            label="tag_04"
-            view={SingleLinksFacet}
-          />
-          <Facet
-            show={facetsToShow}
-            field="tag_05"
-            label="tag_05"
-            view={SingleLinksFacet}
-          />
-        </div>
-      );
-    }
-  } else {
-    return (
-      <Facet
-        show={facetsToShow}
-        field="tag_01"
-        label="tag_01"
-        view={SingleLinksFacet}
-      />
-    );
+  const facets = [];
+  for (let index = 0; index <= filters.length; index++) {
+    facets.push(index);
   }
 
+  console.log(facets);
   return (
-    <Facet
-      show={facetsToShow}
-      field="tag_01"
-      label="tag_01"
-      view={SingleLinksFacet}
-    />
+    <div>
+      {facets.map((item, index) => (
+        <Facet
+          key={"facet-" + item}
+          show={facetsToShow}
+          field={"tag_0" + (item + 1).toString()}
+          label={"tag_0" + (item + 1).toString()}
+          view={SingleLinksFacet}
+        />
+      ))}
+    </div>
   );
 };
 

@@ -6,7 +6,7 @@ export const convertFromEsSearchData = (
       return {
         price: esSearchData.price?.raw,
         brand: esSearchData.brand?.raw,
-        description: esSearchData.brand?.raw,
+        description: esSearchData.description?.raw,
         id: esSearchData.id.raw,
         image: esSearchData.image?.raw,
         key: esSearchData.key?.raw,

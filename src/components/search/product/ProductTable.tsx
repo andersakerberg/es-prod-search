@@ -18,7 +18,6 @@ import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import { RibbonContainer, RightCornerLargeRibbon } from "react-ribbons";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { StructuredData } from "components/seo/StructuredData";
-import classes from "*.module.css";
 
 const useRowStyles = makeStyles({
   root: {
@@ -70,28 +69,44 @@ function Row(props: { row: Search.SearchData }) {
   const classes = useRowStyles();
 
   return (
-    <React.Fragment key={`react-row-fragment-${shortid}`}>
-      <TableRow onClick={() => setOpen(!open)} key={`table-row-${shortid}`}>
-        <TableCell align="left">
-          <Typography> {row.name}</Typography>
+    <React.Fragment>
+      <TableRow
+        onClick={() => setOpen(!open)}
+        key={`table-first-row-${shortid}`}
+      >
+        <TableCell colSpan={3} align="center">
           <LazyLoadImage
             alt={row.name}
             className={classes.media}
             src={row.image ? row.image : "https://via.placeholder.com/150"}
           />
         </TableCell>
-
-        <TableCell align="right">
-          <IconButton aria-label="expand row" size="small">
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
+        <TableCell colSpan={3} align="center">
+          <RibbonContainer key={`react-ribbon-container-${shortid}`}>
+            <RightCornerLargeRibbon
+              backgroundColor="#4bbcd3"
+              color="#f0f0f0"
+              fontFamily="Arial"
+              className="brand-ribbon"
+            >
+              {row.brand}
+            </RightCornerLargeRibbon>
+          </RibbonContainer>
         </TableCell>
       </TableRow>
-      <TableRow onClick={() => setOpen(!open)}>
-        <TableCell align="left">
-          <Typography>{row.price + " SEK"}</Typography>
+      <TableRow
+        onClick={() => setOpen(!open)}
+        key={`table-second-row-${shortid}`}
+      >
+        <TableCell colSpan={3} align="left">
+          <Typography> {row.name}</Typography>
         </TableCell>
-        <TableCell align="right">
+      </TableRow>
+      <TableRow
+        onClick={() => setOpen(!open)}
+        key={`table-third-row-${shortid}`}
+      >
+        <TableCell colSpan={4} align="left">
           <Button
             size="small"
             color="primary"
@@ -99,49 +114,40 @@ function Row(props: { row: Search.SearchData }) {
             target="blank"
             className="toStoreButton"
           >
-            <Typography>Till butik</Typography>
+            <Typography> {row.price + " SEK"}</Typography>
           </Button>
         </TableCell>
+        <TableCell align="right">
+          <IconButton aria-label="expand row" size="medium">
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
       </TableRow>
-      <TableRow onClick={() => setOpen(!open)}>
+      <TableRow
+        onClick={() => setOpen(!open)}
+        key={`table-fourth-row-${shortid}`}
+      ></TableRow>
+      <TableRow
+        onClick={() => setOpen(!open)}
+        key={`table-fifth-row-${shortid}`}
+      >
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Table size="small" aria-label="purchases">
                 <TableBody>
-                  <TableRow onClick={() => setOpen(!open)}>
-                    <TableCell align="center">
-                      <RibbonContainer>
-                        <LazyLoadImage
-                          alt={row.name}
-                          className={"detailImage"}
-                          src={
-                            row.image
-                              ? row.image
-                              : "https://via.placeholder.com/150"
-                          }
-                        />
-                        <RightCornerLargeRibbon
-                          backgroundColor="#cc0000"
-                          color="#f0f0f0"
-                          fontFamily="Arial"
-                        >
-                          {row.price + " SEK"}
-                        </RightCornerLargeRibbon>
-                      </RibbonContainer>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow onClick={() => setOpen(!open)}>
-                    <TableCell align="left">
-                      <Typography>{row.description}</Typography>
-                    </TableCell>
+                  <TableRow
+                    key={`table-first-merchant-row-${shortid}`}
+                    onClick={() => setOpen(!open)}
+                  >
+                    <TableCell align="center"></TableCell>
                   </TableRow>
 
                   {row.merchantData
                     .sort(sortMerchants)
                     .map((merchant: Search.MerchantData) => (
                       <TableRow
-                        key={"details" + merchant.id}
+                        key={"details" + merchant.id + "first"}
                         className="merchant-data"
                       >
                         <TableCell align="left">
@@ -159,7 +165,6 @@ function Row(props: { row: Search.SearchData }) {
                         </TableCell>
                         <TableCell align="left">
                           <Typography className="typo-price-merchant">
-                            {" "}
                             {merchant.price + " SEK"}
                           </Typography>
                         </TableCell>
@@ -167,7 +172,7 @@ function Row(props: { row: Search.SearchData }) {
                           <Button
                             size="small"
                             color="primary"
-                            href={row.url}
+                            href={merchant.url}
                             target="blank"
                             className="toStoreButton"
                           >
@@ -176,11 +181,20 @@ function Row(props: { row: Search.SearchData }) {
                         </TableCell>
                       </TableRow>
                     ))}
+
+                  <TableRow
+                    key={`table-first-descriptioin-row-${shortid}`}
+                    onClick={() => setOpen(!open)}
+                  >
+                    <TableCell align="left">
+                      <Typography>{row.description}</Typography>
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </Box>
           </Collapse>
-          <Divider></Divider>
+          <Divider className="divider"></Divider>
         </TableCell>
       </TableRow>
     </React.Fragment>
@@ -188,12 +202,14 @@ function Row(props: { row: Search.SearchData }) {
 }
 
 export default function ProductTable(props: { products: Search.SearchData[] }) {
-  const classes = useRowStyles();
   return (
     <Table aria-label="collapsible table" key={`table-${shortid}`}>
       <TableBody key={`table-body-${shortid}`}>
         {props.products.map((row) => (
-          <Row key={`row-${shortid}-${row.id}`} row={row} />
+          <Row
+            key={`row-${shortid}-${row.id}-${shortid}-${shortid}`}
+            row={row}
+          />
         ))}
       </TableBody>
     </Table>

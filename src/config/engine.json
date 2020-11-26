@@ -1,5 +1,5 @@
 {
-  "engineName": "aff-dev-m2",
+  "engineName": "aff-dev-m",
   "endpointBase": "https://0949d47d5b6f44168f0f81e0b797f706.ent-search.westeurope.azure.elastic-cloud.com",
   "searchKey": "search-oa2xvfwpjdfbd5pczn4s2pz2",
   "resultFields": [
@@ -15,10 +15,25 @@
     "tag_02",
     "tag_03",
     "tag_04",
-    "tag_05"
+    "tag_05",
+    "tag_06",
+    "tag_07",
+    "tag_08",
+    "tag_09"
   ],
   "sortFields": ["time_updated"],
-  "facets": ["tag_01", "tag_02", "tag_03", "tag_04", "tag_05"],
+  "facets": [
+    "tag_01",
+    "tag_02",
+    "tag_03",
+    "tag_04",
+    "tag_05",
+    "tag_06",
+    "tag_07",
+    "tag_08",
+    "tag_09",
+    "tag_10"
+  ],
   "titleField": "name",
   "urlField": "url"
 }

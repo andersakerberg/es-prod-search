@@ -19,7 +19,7 @@
 }
 
 .app-container svg * {
-  fill: #f3a4af;
+  fill: #4bbcd3;
 }
 
 .app-container .sui-layout-header {
@@ -179,6 +179,11 @@ html {
   border: 1px green solid;
 }
 
+.app-container .article p,
+.app-container .post p {
+  margin: 0 !important;
+}
+
 .app-container .scroll-menu-arrow {
   padding: 20px;
   cursor: pointer;
@@ -214,13 +219,6 @@ td {
   padding: 6px 12px 10px 1px !important;
 }
 
-.makeStyles-media-3 {
-  width: 65px !important;
-  position: relative;
-  top: 0;
-  left: 0;
-}
-
 .MuiButtonBase-root {
   width: 50px !important;
   text-align: center;
@@ -253,13 +251,21 @@ table {
   padding: 0 !important;
 }
 
-td img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+.MuiTypography-body1 {
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+  margin-left: 5px;
 }
+
 .makeStyles-media-3 {
-  margin: 0;
+  margin: 8px;
+  width: 163px !important;
+  position: relative;
+  top: 0;
+  left: 0;
 }
 .MuiTableCell-root {
   border: none !important;
@@ -273,13 +279,6 @@ td img {
   background-color: none !important;
 }
 
-.row-product-table {
-  background-color: transparent;
-  border: rgb(189, 211, 190) 1px solid !important;
-  border-radius: 5px;
-}
-
-
 .MuiTypography-body1 {
   font-size: 1rem;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
@@ -287,4 +286,34 @@ td img {
   line-height: 1;
   letter-spacing: 0.00938em;
   padding: 2px;
+}
+
+.MuiDivider-root {
+  border: none !important;
+  height: 1px !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  background-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.app-container ul {
+  margin: 3px;
+  padding: 0;
+  list-style-type: none;
+  text-align: center;
+  background-color: #4bbcd3;
+}
+
+div[class*="ReactRibbons_rightCornerLargeRibbon"] {
+  position: absolute;
+  top: -42px;
+
+  right: -4px;
+}
+.MuiTableCell-root
+  .MuiTableCell-body
+  .MuiTableCell-alignLeft
+  .MuiTableCell-sizeSmall
+  img {
+  width: 53px !important;
 }
